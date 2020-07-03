@@ -1,0 +1,54 @@
+create database tier3
+use tier3
+
+create table Emp
+(
+  id int primary key identity,
+  name varchar(50),
+  age int,
+  inserted_date date,
+  status int default 0
+)
+
+select *from Emp
+
+alter proc usp_Emp_insert
+@name varchar(50),
+@age int
+as
+begin
+      insert into Emp(name,age,inserted_date)values(@name,@age, GETDATE())
+end 
+
+alter proc usp_Emp_get
+as
+begin
+      select *, CONVERT(varchar(50), inserted_date, 106)idate from Emp where status=0
+end 
+
+alter proc usp_Emp_delete
+@id int
+as
+begin
+      update Emp set status = 1 where id=@id
+end 
+
+alter proc usp_Emp_edit
+@id int
+as
+begin
+      select *from Emp where id=@id
+end 
+
+alter proc usp_Emp_update
+@name varchar(50),
+@age int,
+@id int
+as
+begin
+      update Emp set name=@name,age=@age where id=@id
+end 
+
+select *from Emp
+
+truncate table Emp

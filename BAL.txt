@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DAL;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace BAL
+{
+    public class BusinessAccessLayer
+    {
+        public int id { get; set; }    //class property class parameter or class variable
+        public string name { get; set; }//class property class parameter or class variable
+        public int age { get; set; }   //class property class parameter or class variable
+
+        DataAccessLayer obj = new DataAccessLayer();
+        public void Employee_Insert()
+        {
+            SqlParameter[] parm = { 
+                                   new SqlParameter("@name", name),                                  
+                                   new SqlParameter("@age", age)
+                                  };
+            obj.Insert("usp_Emp_insert", parm);
+        }
+        public DataTable Employee_Show()
+        {
+            DataTable dt = new DataTable();
+            dt = obj.Get("usp_Emp_get");
+            return dt;
+        }
+        public void Employee_Delete()
+        {
+            SqlParameter[] parm = { 
+                                   new SqlParameter("@id", id),
+                                  };
+            obj.Insert("usp_Emp_delete", parm);
+        }
+        public DataTable Employee_Edit()
+        {
+            SqlParameter[] parm = { 
+                                   new SqlParameter("@id", id),
+                                  };
+            DataTable dt1 = new DataTable();
+            dt1 = obj.GetbyParameter("usp_Emp_edit", parm);
+            return dt1;
+        }
+        public void Employee_Update()
+        {
+            SqlParameter[] parm = { 
+                                   new SqlParameter("@name", name),
+                                   new SqlParameter("@age", age),
+                                   new SqlParameter("@id", id)
+                                  };
+            obj.Insert("usp_Emp_update", parm); //insert wale ko hi DAL main hain
+        }
+    }
+}

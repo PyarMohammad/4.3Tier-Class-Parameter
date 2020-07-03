@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using BAL;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace Tier
+{
+    public partial class Employee : System.Web.UI.Page
+    {
+        BusinessAccessLayer obj = new BusinessAccessLayer();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                BindData();
+            }
+        }
+
+        protected void btnsave_Click(object sender, EventArgs e)
+        {
+            if (btnsave.Text == "SAVE")
+            {
+                obj.name = txtname.Text;
+                obj.age = Convert.ToInt32(txtage.Text);
+                obj.Employee_Insert();
+                BindData();
+            }
+            else if (btnsave.Text == "UPDATE")
+            {
+                obj.name = txtname.Text;
+                obj.age = Convert.ToInt32(txtage.Text);
+                obj.id = Convert.ToInt32(ViewState["IID"]);
+                obj.Employee_Update();
+                BindData();
+            }
+        }
+        public void BindData()
+        {
+            DataTable dt = new DataTable();
+            dt = obj.Employee_Show();
+            grd.DataSource = dt;
+            grd.DataBind();
+        }
+        protected void grd_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            obj.id = Convert.ToInt32(e.CommandArgument);   // imp line
+
+            if (e.CommandName == "A")
+            {
+                obj.id = Convert.ToInt32(e.CommandArgument);
+                obj.Employee_Delete();
+                BindData();
+            }
+            else if (e.CommandName == "B")
+            {
+                DataTable dt = new DataTable();
+                dt = obj.Employee_Edit();
+
+                txtname.Text = dt.Rows[0]["name"].ToString();
+                txtage.Text = dt.Rows[0]["age"].ToString();
+                btnsave.Text = "UPDATE";
+                ViewState["IID"] = e.CommandArgument;
+            }
+        }
+    }
+}
